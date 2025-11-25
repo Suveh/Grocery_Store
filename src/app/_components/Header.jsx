@@ -21,12 +21,33 @@ function Header() {
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
 
+  const checkLoginStatus = () => {
+    const jwt = sessionStorage.getItem("jwt");
+    setIsLogin(!!jwt);
+  };
+
   // Set client-side flag and check login status
   useEffect(() => {
     setIsClient(true);
-    // Check sessionStorage only on client side
-    const jwt = sessionStorage.getItem("jwt");
-    setIsLogin(!!jwt);
+    checkLoginStatus();
+
+    const handleStorageChange = () => {
+      checkLoginStatus();
+    };
+
+    const handleLoginEvent = () => {
+      checkLoginStatus();
+    };
+
+    // Add event listeners
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('login', handleLoginEvent);
+    
+    return () => {
+      // Cleanup event listeners
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('login', handleLoginEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -44,7 +65,7 @@ function Header() {
     sessionStorage.removeItem("jwt");
     sessionStorage.removeItem("user");
     setIsLogin(false);
-    router.push("/");
+    router.push("/sign-in");
   };
 
   // Don't render dropdown content until client-side to avoid hydration issues

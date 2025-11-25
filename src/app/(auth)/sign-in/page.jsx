@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, KeyRound, HelpCircle, UserPlus } from "lucide-react";
+import { Mail, KeyRound, HelpCircle, UserPlus, LoaderIcon } from "lucide-react";
 import GlobalApi from "@/app/_utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -115,7 +115,8 @@ function LoginPage() {
             onClick={()=>onSignIn()}
             disabled={ !email || !password || loading }
           >
-            Login
+            {loading?<LoaderIcon className="animate-spin mx-auto" size={24}/>:
+            "Login"}
           </button>
         </form>
 

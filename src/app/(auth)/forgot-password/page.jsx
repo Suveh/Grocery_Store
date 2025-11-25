@@ -76,7 +76,8 @@ function ForgotPassword() {
             className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-green-700 transition"
             disabled={loading || !email}
           >
-            Send Reset Link
+            {loading?<LoaderIcon className="animate-spin mx-auto" size={24}/>:
+            "Send Reset Link"}
           </button>
         </form>
 
