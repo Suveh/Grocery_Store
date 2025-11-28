@@ -1,7 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { CircleUserRound, LayoutGrid, Search, ShoppingBag, LogOut, User, CreditCard, Users } from "lucide-react";
+import {
+  CircleUserRound,
+  LayoutGrid,
+  Search,
+  ShoppingBag,
+  LogOut,
+  User,
+  CreditCard,
+  Users,
+  ShoppingBasket,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,16 +24,36 @@ import {
 import GlobalApi from "../_utils/GlobalApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { UpdateCartContext } from "../_context/UpdateCartCotext";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import CartItemList from "./CartItemList";
+import { toast } from "sonner";
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [isClient, setIsClient] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
+  const [jwt, setJwt] = useState(null);
   const router = useRouter();
+  const [totalCartItems, setTotalCartItems] = useState(0);
+  const { updateCart, setUpdateCart } = React.useContext(UpdateCartContext);
+  const [cartItemList, setCartItemList] = useState([]);
 
   const checkLoginStatus = () => {
-    const jwt = sessionStorage.getItem("jwt");
-    setIsLogin(!!jwt);
+    const jwtToken = sessionStorage.getItem("jwt");
+    const userData = sessionStorage.getItem("user");
+    setJwt(jwtToken);
+    setUser(userData ? JSON.parse(userData) : null);
+    setIsLogin(!!jwtToken);
   };
 
   // Set client-side flag and check login status
@@ -40,19 +70,25 @@ function Header() {
     };
 
     // Add event listeners
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('login', handleLoginEvent);
-    
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("login", handleLoginEvent);
+
     return () => {
       // Cleanup event listeners
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('login', handleLoginEvent);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("login", handleLoginEvent);
     };
   }, []);
 
   useEffect(() => {
     getCategoryList();
   }, []);
+
+  useEffect(() => {
+    if (user && jwt) {
+      getCartItems();
+    }
+  }, [updateCart, user, jwt]);
 
   const getCategoryList = () => {
     GlobalApi.getCategory().then((resp) => {
@@ -61,12 +97,43 @@ function Header() {
     });
   };
 
+  const getCartItems = async () => {
+    const cartItemList_ = await GlobalApi.getCartItems(user.id, jwt);
+    console.log(cartItemList_);
+    setTotalCartItems(cartItemList_?.length);
+    setCartItemList(cartItemList_);
+  };
+
   const handleLogout = () => {
     sessionStorage.removeItem("jwt");
     sessionStorage.removeItem("user");
+    setJwt(null);
+    setUser(null);
     setIsLogin(false);
     router.push("/sign-in");
   };
+
+  const onDeleteItem = async (id) => {
+    try {
+      const resp = await GlobalApi.deleteCartItem(id, jwt);
+      setCartItemList((prev) => prev.filter((item) => item.id !== id));
+      setTotalCartItems((prev) => prev - 1);
+      toast("Item removed !");
+      //getCartItems();
+    } catch (error) {
+      toast.error("Failed to remove item");
+      console.error("Delete error:", error);
+    }
+  };
+
+  const [subtotal, setSubTotal] = useState(0);
+  useEffect(() => {
+    let total = 0;
+    cartItemList.forEach((element) => {
+      total = total + element.amount;
+    });
+    setSubTotal(total.toFixed(2));
+  }, [cartItemList]);
 
   // Don't render dropdown content until client-side to avoid hydration issues
   const renderDropdownContent = () => {
@@ -158,13 +225,48 @@ function Header() {
       </div>
 
       {/* Right Section */}
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center ">
+       
         {/* Cart */}
-        <div className="flex gap-2 items-center text-gray-700 hover:text-primary cursor-pointer transition-colors">
-          <ShoppingBag className="h-5 w-5" />
-          <span className="font-medium">0</span>
-        </div>
+        <Sheet>
+          <SheetTrigger>
+            <div className="flex gap-2 items-center text-gray-700 hover:text-primary cursor-pointer transition-colors">
+              <ShoppingBasket className="h-5 w-5" />
+              <span className="font-medium bg-primary text-white px-2 rounded-full">
+                {totalCartItems}
+              </span>
+            </div>
+          </SheetTrigger>
+          <SheetContent className="flex flex-col h-full">
+            <SheetHeader className="shrink-0">
+              <SheetTitle className="bg-primary text-white font-bold text-lg p-2 mt-5">
+                My Cart
+              </SheetTitle>
+            </SheetHeader>
 
+            {/* Scrollable cart items area */}
+            <div className="flex-1 min-h-0">
+              <CartItemList
+                cartItemList={cartItemList}
+                onDeleteItem={onDeleteItem}
+              />
+            </div>
+
+            {/* Fixed checkout section at bottom */}
+            {cartItemList.length > 0 && (
+              <div className="border-t pt-4 shrink-0">
+                <h2 className="text-lg font-bold flex justify-between mb-4">
+                  Subtotal<span>Rs. {subtotal}</span>
+                </h2>
+                <SheetClose asChild>
+                  <Button className="w-full bg-primary hover:bg-primary/90" onClick={()=>router.push(jwt?'/checkout':'/sign-in')}>
+                    Checkout
+                  </Button>
+                </SheetClose>
+              </div>
+            )}
+          </SheetContent>
+        </Sheet>
         {/* Login Button / User Icon */}
         {!isClient ? (
           // Show loading state during SSR
@@ -178,9 +280,9 @@ function Header() {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="p-2 h-auto rounded-full hover:bg-green-100">
-                <CircleUserRound className="h-10 w-10 text-primary cursor-pointer" />
-              </Button>
+              <div className="p-2 rounded-full hover:bg-green-100 cursor-pointer transition-colors">
+                <CircleUserRound className="h-8 w-8 text-primary" />
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -204,7 +306,7 @@ function Header() {
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 className="cursor-pointer flex items-center gap-2 text-red-600 focus:text-red-600"
                 onClick={handleLogout}
               >

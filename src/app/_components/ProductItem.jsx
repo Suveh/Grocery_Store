@@ -41,6 +41,9 @@ function ProductItem({ product }) {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
+            <DialogTitle className="sr-only">
+              Product Details: {product.name}
+            </DialogTitle>
             
               <ProductItemDetails product={product}/>
             

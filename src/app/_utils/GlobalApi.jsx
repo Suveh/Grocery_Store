@@ -28,6 +28,55 @@ const forgotPassword = (email) => {
   }).then(resp => resp.data);
 }
 
+const addToCart = (data, jwt) =>
+  axiosClient.post("/user-carts", data ,
+  {
+    headers: { Authorization: "Bearer " + jwt }
+  });
+
+
+const getCartItems = (userid, jwt) => {
+  return axiosClient.get(`/user-carts?filters[userid][$eq]=${userid}&populate[product][populate]=image`, {
+    headers: {
+      Authorization: 'Bearer ' + jwt
+    },
+  }).then(resp => {
+    const data = resp.data.data;
+    
+    const cartItemsList = data?.map(item => ({
+      id: item.id,
+      quantity: item.quantity,
+      amount:item.amount,
+      userid:item.userid,
+      product: {
+        id:item.product?.id,
+        name: item.product?.name,
+        image:item.product?.image,
+        actualPrice:item.product?.mrp
+      }
+    }))
+    
+    return cartItemsList;
+  })
+};
+
+const deleteCartItem = (id, jwt) =>
+  axiosClient.delete("/user-carts/" + id, {
+    headers: {
+      Authorization: "Bearer " + jwt
+    },
+  }).then(resp => {
+    console.log("=== DELETE RESPONSE ===");
+    console.log("Status:", resp.status);
+    console.log("Status Text:", resp.statusText);
+    console.log("Response Data:", resp.data);
+    console.log("=== END DELETE RESPONSE ===");
+    return resp.data;
+  }).catch(error => {
+    console.error("Delete error:", error.response?.data || error.message);
+    throw error;
+  });
+
 
 export default{
     getCategory,
@@ -38,4 +87,7 @@ export default{
     registerUser,
     SignIn,
     forgotPassword,
+    addToCart,
+    getCartItems,
+    deleteCartItem,
 }
