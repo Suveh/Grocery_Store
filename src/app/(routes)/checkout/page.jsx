@@ -1,16 +1,20 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ArrowBigRight } from "lucide-react";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import GlobalApi from "@/app/_utils/GlobalApi";
 import { useRouter } from "next/navigation";
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import { toast } from "sonner";
+import CartItemList from "@/app/_components/CartItemList";
+import { Button } from "@/components/ui/button";
+import { UpdateCartContext } from "@/app/_context/UpdateCartContext";
+
 
 export default function Checkout() {
   const router = useRouter();
-
   const [jwt, setJwt] = useState(null);
   const [user, setUser] = useState(null);
   const [cartItems, setCartItems] = useState([]);
+  const { updateCart, setUpdateCart } = React.useContext(UpdateCartContext); 
 
   const [form, setForm] = useState({
     username: "",
@@ -77,6 +81,8 @@ export default function Checkout() {
   const tax = subtotal * 0.09;
   const total = subtotal + delivery + tax;
 
+  const totalUSD = (total / 300).toFixed(2);
+
   /** --------------------------
    * Handle Input Change
    * -------------------------- */
@@ -94,6 +100,38 @@ export default function Checkout() {
     }
 
     alert("Ready for payment gateway integration!");
+  };
+
+  const onApprove = (data) => {
+    console.log(data);
+    const payload = {
+      data: {
+        paymentId: data.paymentId.toString(),
+        totalOrderAmount: total,
+        username: form.username,
+        email: form.email,
+        phone: form.phone,
+        zipcode: form.zipcode,
+        address: form.address,
+        userid: user.id,
+        orderItemList: cartItems.map((item) => ({
+          quantity: item.quantity,
+          price: item.amount,
+          product: item.product?.id,
+        })),
+      },
+    };
+    GlobalApi.createOrder(payload, jwt).then((resp) => {
+      console.log(resp);
+      toast("Order Places Successfully!");
+      cartItems.forEach((item) => {
+        GlobalApi.deleteCartItem(item.documentId, jwt);
+      });
+      setCartItems([]);
+      setUpdateCart((prev) => !prev);
+
+      router.replace("/order-confirmation");
+    });
   };
 
   return (
@@ -194,12 +232,33 @@ export default function Checkout() {
               <span className="text-green-600">Rs. {total.toFixed(2)}</span>
             </div>
 
-            <Button
-              className="flex gap-2 items-center justify-center mt-4 bg-green-600 hover:bg-green-700"
-              onClick={handlePayment}
-            >
-              Proceed to Payment <ArrowBigRight className="h-4 w-4" />
-            </Button>
+             <Button onClick={()=>onApprove({paymentId:1234})}>Payment</Button>
+
+            <PayPalButtons
+              disabled={
+                !(
+                  form.username &&
+                  form.email &&
+                  form.address &&
+                  form.zipcode &&
+                  form.phone
+                )
+              }
+              style={{ layout: "horizontal" }}
+              onApprove={onApprove}
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        value: totalUSD,
+                        currency_code: "USD",
+                      },
+                    },
+                  ],
+                });
+              }}
+            />
           </div>
         </div>
       </div>

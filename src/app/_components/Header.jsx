@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import Image from "next/image";
 import {
   CircleUserRound,
@@ -24,7 +24,7 @@ import {
 import GlobalApi from "../_utils/GlobalApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { UpdateCartContext } from "../_context/UpdateCartCotext";
+import { UpdateCartContext } from "../_context/UpdateCartContext";
 import {
   Sheet,
   SheetClose,
@@ -113,19 +113,30 @@ function Header() {
     router.push("/sign-in");
   };
 
-  const onDeleteItem = async (id) => {
-    try {
-      const resp = await GlobalApi.deleteCartItem(id, jwt);
-      setCartItemList((prev) => prev.filter((item) => item.id !== id));
-      setTotalCartItems((prev) => prev - 1);
-      toast("Item removed !");
-      //getCartItems();
-    } catch (error) {
-      toast.error("Failed to remove item");
-      console.error("Delete error:", error);
-    }
-  };
+  const onDeleteItem = async (documentId) => {
+  try {
+    console.log("🔍 DELETE DEBUG - Starting delete for ID:", documentId);
+    console.log("🔍 DELETE DEBUG - JWT available:", !!jwt);
+    console.log("🔍 DELETE DEBUG - User ID:", user?.id);
+    
+    const resp = await GlobalApi.deleteCartItem(documentId, jwt);
+    console.log("✅ DELETE DEBUG - API Success:", resp);
+    
+    // Update local state
+    setCartItemList((prev) => prev.filter((item) => item.documentId !== documentId));
+    setTotalCartItems((prev) => Math.max(prev - 1, 0));
 
+    
+    toast('Item removed!');
+  } catch (error) {
+    console.error("❌ DELETE DEBUG - API Failed:");
+    console.error(" - Status:", error.response?.status);
+    console.error(" - Status Text:", error.response?.statusText);
+    console.error(" - Error Data:", error.response?.data);
+    console.error(" - Full Error:", error);
+    toast.error('Failed to remove item from server');
+  }
+};
   const [subtotal, setSubTotal] = useState(0);
   useEffect(() => {
     let total = 0;
@@ -293,7 +304,7 @@ function Header() {
                   Profile
                 </DropdownMenuItem>
               </Link>
-              <Link href="/orders">
+              <Link href="/my-order">
                 <DropdownMenuItem className="cursor-pointer flex items-center gap-2">
                   <CreditCard className="h-4 w-4" />
                   My Orders

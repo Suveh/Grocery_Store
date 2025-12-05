@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import GlobalApi from "../_utils/GlobalApi";
 import { toast } from "sonner";
 import { data } from "autoprefixer";
-import { UpdateCartContext } from "../_context/UpdateCartCotext";
+import { UpdateCartContext } from "../_context/UpdateCartContext";
 
 function ProductItemDetails({ product }) {
   const {updateCart,setUpdateCart}=React.useContext(UpdateCartContext);
@@ -28,14 +28,12 @@ function ProductItemDetails({ product }) {
       return;
     }
     const cartData = {
-      data: {
-        product: product.id,
-        quantity: quantity,
-        amount: (quantity * productTotalPrice).toFixed(2),
-        users_permissions_user: user.id,
-        userid: user.id,
-      },
-    };
+  product: product.id,
+  quantity,
+  amount: (quantity * productTotalPrice).toFixed(2),
+  userid: user.id
+};
+
     console.log("Adding to cart", cartData);
 
     GlobalApi.addToCart(cartData, jwt).then(
@@ -46,6 +44,7 @@ function ProductItemDetails({ product }) {
         setLoading(false);
       },
       (e) => {
+        console.error("❌ Error adding to cart:", e);
         toast("Error adding product to cart");
         setLoading(false);
       }

@@ -11,17 +11,17 @@ function CartItemList({ cartItemList, onDeleteItem }) {
 
   console.log("Cart data:", { cartItemList });
 
-  const handleDeleteItem = async (cartItemId) => {
-    setDeletingItems((prev) => ({ ...prev, [cartItemId]: true }));
+  const handleDeleteItem = async (cartDocumentId) => {
+    setDeletingItems((prev) => ({ ...prev, [cartDocumentId]: true }));
 
     try {
-      console.log("Deleting cart item:", cartItemId);
-      await onDeleteItem(cartItemId);
+      console.log("Deleting cart item:", cartDocumentId);
+      await onDeleteItem(cartDocumentId);
       console.log("Cart item deleted successfully");
     } catch (error) {
       console.error("Error deleting cart item:", error);
     } finally {
-      setDeletingItems((prev) => ({ ...prev, [cartItemId]: false }));
+      setDeletingItems((prev) => ({ ...prev, [cartDocumentId]: false }));
     }
   };
 
@@ -37,7 +37,7 @@ function CartItemList({ cartItemList, onDeleteItem }) {
           const fullImageUrl = imageUrl
             ? process.env.NEXT_PUBLIC_BACKEND_URL + imageUrl
             : null;
-          const isDeleting = deletingItems[cart.id];
+          const isDeleting = deletingItems[cart.documentId];
 
           return (
             <div
@@ -77,7 +77,7 @@ function CartItemList({ cartItemList, onDeleteItem }) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => handleDeleteItem(cart.id)}
+                onClick={() => handleDeleteItem(cart.documentId)}
                 disabled={isDeleting}
                 className="shrink-0 text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors"
                 title="Remove from cart"

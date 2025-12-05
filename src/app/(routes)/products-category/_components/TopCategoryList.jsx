@@ -11,7 +11,8 @@ function TopCategoryList({ CategoryList, selectedCategory }) {
           index // Added optional chaining to prevent errors if CategoryList is undefined
         ) => (
           <Link
-            href={"/products-category/" + category.name}
+  href={`/products-category/${encodeURIComponent(category.name)}`}
+
             key={category.id || index}
             className={`flex flex-col items-center gap-2 min-w-20 sm:min-w-[100px] p-3 sm:p-3 rounded-lg cursor-pointer hover:bg-green-100 group ${selectedCategory === category.name&&'bg-primary text-white '}`}
           >

@@ -13,7 +13,7 @@ function CategoryList({CategoryList}) {
        {/* Responsive grid layout */}
        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4 sm:gap-6'>
         {CategoryList.map((category,index)=>(
-            <Link href={'/products-category/'+category.name}
+            <Link href={`/products-category/${encodeURIComponent(category.name)}`}
               key={category.id || index} 
               className='flex flex-col items-center p-3  bg-green-100 rounded-xl cursor-pointer group hover:bg-green-300'
             >
