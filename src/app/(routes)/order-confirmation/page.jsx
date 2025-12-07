@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { CheckCircle, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
 
 function OrderConfirmation() {
   return (
@@ -9,7 +10,7 @@ function OrderConfirmation() {
             <CheckCircle2 className='font-medium text-3xl text-primary h-14 w-14'/>
             <h2 className='font-medium text-3xl text-primary'>Order Successful</h2>
             <h2>Thank you so much for order</h2>
-            <Button className='mt-8'>Track your order</Button>
+            <Link href={"/my-order"}><Button className='mt-8'>Track your order</Button></Link>
         </div>
     </div>
   )

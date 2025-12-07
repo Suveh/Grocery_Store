@@ -175,33 +175,37 @@ const deleteCartItem = (documentId, jwt) =>
     }
   });
 
-  const getMyOrder = (userid, jwt) => {
-  return axiosClient.get(
-    `orders?filters[users_permissions_user][id][$eq]=${userid}&populate[orderItemList][populate][product][populate]=image`,
-    {
-      headers: { Authorization: "Bearer " + jwt }
-    }
-  )
-    .then(resp => {
+const getMyOrder = (userid, jwt) => {
+  return axiosClient
+    .get(
+      `/orders?filters[userid][$eq]=${userid}` +
+        `&populate[orderItemList][populate][product][populate]=image`,
+      {
+        headers: { Authorization: "Bearer " + jwt },
+      }
+    )
+    .then((resp) => {
       const response = resp.data.data;
 
-      const orderList = response.map(item => ({
+      const orderList = response.map((item) => ({
         id: item.id,
         totalOrderAmount: item.totalOrderAmount,
         paymentId: item.paymentId,
         orderItemList: item.orderItemList,
-        createdAt: item.createdAt, // Add this if available
-        status: item.status // Add this if available
+        createdAt: item.createdAt,
+        status: item.orderStatus,
       }));
 
       return orderList;
     })
-    .catch(error => {
-      console.error("Get orders error:", error.response?.data || error.message);
+    .catch((error) => {
+      console.error(
+        "Get orders error:",
+        error.response?.data || error.message
+      );
       throw error;
     });
 };
-
 
 
 

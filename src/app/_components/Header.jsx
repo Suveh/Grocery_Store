@@ -1,39 +1,14 @@
 "use client";
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  CircleUserRound,
-  LayoutGrid,
-  Search,
-  ShoppingBag,
-  LogOut,
-  User,
-  CreditCard,
-  Users,
-  ShoppingBasket,
-} from "lucide-react";
+import { CircleUserRound, LayoutGrid, Search, LogOut, User, CreditCard, Users,ShoppingBasket } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import GlobalApi from "../_utils/GlobalApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UpdateCartContext } from "../_context/UpdateCartContext";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import CartItemList from "./CartItemList";
 import { toast } from "sonner";
 
@@ -205,7 +180,7 @@ function Header() {
             alt="logo"
             width={150}
             height={60}
-            className="w-32 h-auto"
+            className="w-32 h-auto cursor-pointer"
             priority
           />
         </Link>
