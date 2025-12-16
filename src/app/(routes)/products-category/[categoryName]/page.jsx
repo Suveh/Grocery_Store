@@ -13,6 +13,7 @@ async function ProductCategory(props) {
 
   const productList = await GlobalApi.getProductsByCategory(categoryName);
   const CategoryListData = await GlobalApi.getCategoryList();
+  
 
   return (
     <div>

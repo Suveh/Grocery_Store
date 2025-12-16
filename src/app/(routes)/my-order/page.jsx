@@ -64,6 +64,8 @@ function MyOrder() {
         return <Truck className="h-5 w-5 text-blue-600" />;
       case 'processing':
         return <Clock className="h-5 w-5 text-yellow-600" />;
+      case 'pending':
+        return <Clock className="h-5 w-5 text-orange-600" />;
       case 'cancelled':
         return <AlertCircle className="h-5 w-5 text-red-600" />;
       default:
@@ -79,6 +81,8 @@ function MyOrder() {
         return 'bg-blue-100 text-blue-800';
       case 'processing':
         return 'bg-yellow-100 text-yellow-800';
+      case 'pending': 
+        return 'bg-orange-100 text-orange-800';
       case 'cancelled':
         return 'bg-red-100 text-red-800';
       default:
@@ -89,9 +93,9 @@ function MyOrder() {
   if (loading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
-        <div className="bg-linear-to-r from-primary to-primary-dark p-6 shadow-lg">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-white">
-            <Package className="inline-block mr-3 h-8 w-8" />
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-white flex items-center justify-center">
+            <Package className="mr-3 h-8 w-8" />
             My Orders
           </h2>
         </div>
@@ -111,15 +115,12 @@ function MyOrder() {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-primary p-2 shadow-lg">
+      <div className="bg-primary p-4 shadow-lg">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-white flex items-center justify-center">
             <Package className="mr-3 h-8 w-8" />
             My Orders
           </h2>
-          <p className="text-center text-primary-light mt-2">
-            Track and manage all your orders in one place
-          </p>
         </div>
       </div>
 
@@ -210,11 +211,11 @@ function MyOrder() {
                     </div>
                   </CollapsibleTrigger>
                   
-                  <CollapsibleContent className="border-t border-gray-100">
+                  <CollapsibleContent className="border-t border-gray-200">
                     <div className="p-6">
-                      <h4 className="font-semibold text-lg text-gray-800 mb-4 flex items-center gap-2">
-                        <Package className="h-5 w-5" />
-                        Order Items
+                      <h4 className="font-semibold text-lg text-gray-800 mb-4 ml-2 flex items-center gap-2">
+                        
+                        Items
                       </h4>
                       
                       {item.orderItemList?.length > 0 ? (
@@ -222,7 +223,7 @@ function MyOrder() {
                           {item.orderItemList.map((orderItem, idx) => (
                             <div 
                               key={idx} 
-                              className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                              className="flex items-center gap-4 p-4 bg-gray-200 rounded-xl hover:bg-gray-100 transition-colors duration-200"
                             >
                               {/* Product Image */}
                               <div className="shrink-0">
@@ -276,20 +277,7 @@ function MyOrder() {
                                   Rs. {item.totalOrderAmount?.toFixed(2)}
                                 </p>
                               </div>
-                              <div className="text-right">
-                                <p className="text-sm text-gray-600">
-                                  {item.orderItemList?.length || 0} item{item.orderItemList?.length !== 1 ? 's' : ''}
-                                </p>
-                                <button
-                                  onClick={() => {
-                                    // Add reorder functionality here
-                                    console.log('Reorder:', item.id);
-                                  }}
-                                  className="mt-3 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium text-sm"
-                                >
-                                  Reorder All Items
-                                </button>
-                              </div>
+
                             </div>
                           </div>
                         </div>
@@ -306,28 +294,7 @@ function MyOrder() {
             )}
           </div>
 
-          {/* Help Section */}
-          {orderList.length > 0 && (
-            <div className="mt-12 p-6 bg-linear-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                Need Help With Your Order?
-              </h3>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="flex-1 px-4 py-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors font-medium">
-                  Contact Support
-                </button>
-                <button className="flex-1 px-4 py-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors font-medium">
-                  Request Return
-                </button>
-                <button 
-                  onClick={getMyOrder}
-                  className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
-                >
-                  Refresh Orders
-                </button>
-              </div>
-            </div>
-          )}
+        
         </div>
       </div>
 

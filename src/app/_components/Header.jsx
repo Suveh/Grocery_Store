@@ -1,14 +1,38 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { CircleUserRound, LayoutGrid, Search, LogOut, User, CreditCard, Users,ShoppingBasket } from "lucide-react";
+import {
+  CircleUserRound,
+  LayoutGrid,
+  Search,
+  LogOut,
+  User,
+  CreditCard,
+  Users,
+  ShoppingBasket,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import GlobalApi from "../_utils/GlobalApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UpdateCartContext } from "../_context/UpdateCartContext";
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import CartItemList from "./CartItemList";
 import { toast } from "sonner";
 
@@ -22,6 +46,8 @@ function Header() {
   const [totalCartItems, setTotalCartItems] = useState(0);
   const { updateCart, setUpdateCart } = React.useContext(UpdateCartContext);
   const [cartItemList, setCartItemList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   const checkLoginStatus = () => {
     const jwtToken = sessionStorage.getItem("jwt");
@@ -44,14 +70,21 @@ function Header() {
       checkLoginStatus();
     };
 
+    const handleProfileUpdate = () => {
+      console.log("Profile updated, refreshing user data...");
+      checkLoginStatus();
+    };
+
     // Add event listeners
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("login", handleLoginEvent);
+    window.addEventListener("profile-updated", handleProfileUpdate);
 
     return () => {
       // Cleanup event listeners
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("login", handleLoginEvent);
+      window.removeEventListener("profile-updated", handleProfileUpdate);
     };
   }, []);
 
@@ -79,6 +112,17 @@ function Header() {
     setCartItemList(cartItemList_);
   };
 
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user");
+    const avatarUrl = sessionStorage.getItem("avatar");
+
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      setAvatar(avatarUrl || parsedUser.avatar?.url); // Use avatar from sessionStorage or user data
+    }
+  }, []);
+
   const handleLogout = () => {
     sessionStorage.removeItem("jwt");
     sessionStorage.removeItem("user");
@@ -89,29 +133,67 @@ function Header() {
   };
 
   const onDeleteItem = async (documentId) => {
-  try {
-    console.log("🔍 DELETE DEBUG - Starting delete for ID:", documentId);
-    console.log("🔍 DELETE DEBUG - JWT available:", !!jwt);
-    console.log("🔍 DELETE DEBUG - User ID:", user?.id);
-    
-    const resp = await GlobalApi.deleteCartItem(documentId, jwt);
-    console.log("✅ DELETE DEBUG - API Success:", resp);
-    
-    // Update local state
-    setCartItemList((prev) => prev.filter((item) => item.documentId !== documentId));
-    setTotalCartItems((prev) => Math.max(prev - 1, 0));
+    try {
+      console.log("🔍 DELETE DEBUG - Starting delete for ID:", documentId);
+      console.log("🔍 DELETE DEBUG - JWT available:", !!jwt);
+      console.log("🔍 DELETE DEBUG - User ID:", user?.id);
 
-    
-    toast('Item removed!');
-  } catch (error) {
-    console.error("❌ DELETE DEBUG - API Failed:");
-    console.error(" - Status:", error.response?.status);
-    console.error(" - Status Text:", error.response?.statusText);
-    console.error(" - Error Data:", error.response?.data);
-    console.error(" - Full Error:", error);
-    toast.error('Failed to remove item from server');
-  }
-};
+      const resp = await GlobalApi.deleteCartItem(documentId, jwt);
+      console.log("✅ DELETE DEBUG - API Success:", resp);
+
+      // Update local state
+      setCartItemList((prev) =>
+        prev.filter((item) => item.documentId !== documentId)
+      );
+      setTotalCartItems((prev) => Math.max(prev - 1, 0));
+
+      toast("Item removed!");
+    } catch (error) {
+      console.error("❌ DELETE DEBUG - API Failed:");
+      console.error(" - Status:", error.response?.status);
+      console.error(" - Status Text:", error.response?.statusText);
+      console.error(" - Error Data:", error.response?.data);
+      console.error(" - Full Error:", error);
+      toast.error("Failed to remove item from server");
+    }
+  };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    const q = searchTerm.trim();
+    if (!q) return;
+
+    try {
+      // 1) search products whose name contains q
+      const products = await GlobalApi.searchProductsByName(q);
+
+      if (!products || products.length === 0) {
+        // if nothing found, you can toast or just stay
+        console.log("No products found for", q);
+        return;
+      }
+
+      // 2) get its first category
+      const firstProduct = products[0];
+      const firstCategory = firstProduct.categories?.[0];
+
+      if (!firstCategory?.name) {
+        console.log("Product has no category, cannot route to category page");
+        return;
+      }
+
+      // 3) go to category page with q as query param
+      router.push(
+        `/products-category/${encodeURIComponent(
+          firstCategory.name
+        )}?q=${encodeURIComponent(q)}`
+      );
+      setSearchTerm("");
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
+
   const [subtotal, setSubTotal] = useState(0);
   useEffect(() => {
     let total = 0;
@@ -200,19 +282,20 @@ function Header() {
         </DropdownMenu>
 
         {/* Search Bar */}
-        <div className="relative">
+        <form className="relative" onSubmit={handleSearchSubmit}>
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search for products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="border border-gray-300 rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
           />
-        </div>
+        </form>
       </div>
 
       {/* Right Section */}
       <div className="flex gap-4 items-center ">
-       
         {/* Cart */}
         <Sheet>
           <SheetTrigger>
@@ -241,11 +324,14 @@ function Header() {
             {/* Fixed checkout section at bottom */}
             {cartItemList.length > 0 && (
               <div className="border-t pt-4 shrink-0">
-                <h2 className="text-lg font-bold flex justify-between mb-4">
+                <h2 className="text-lg font-bold flex justify-between mb-4 ml-4 mr-4">
                   Subtotal<span>Rs. {subtotal}</span>
                 </h2>
                 <SheetClose asChild>
-                  <Button className="w-full bg-primary hover:bg-primary/90" onClick={()=>router.push(jwt?'/checkout':'/sign-in')}>
+                  <Button
+                    className="w-90 bg-primary hover:bg-primary/90 ml-3 mb-4"
+                    onClick={() => router.push(jwt ? "/checkout" : "/sign-in")}
+                  >
                     Checkout
                   </Button>
                 </SheetClose>
@@ -254,6 +340,7 @@ function Header() {
           </SheetContent>
         </Sheet>
         {/* Login Button / User Icon */}
+
         {!isClient ? (
           // Show loading state during SSR
           <div className="w-20 h-10 bg-gray-200 rounded animate-pulse"></div>
@@ -266,8 +353,40 @@ function Header() {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="p-2 rounded-full hover:bg-green-100 cursor-pointer transition-colors">
+              <div className="p-2 rounded-full cursor-pointer transition-colors">
+                {(() => {
+                  // Check for local avatar first, then user's avatar
+                  const userAvatar = user?.avatar?.url
+                    ? user.avatar.url.startsWith("http")
+                      ? user.avatar.url
+                      : `http://localhost:1337${user.avatar.url}`
+                    : null;
+
+                  const localAvatar = user?.id
+                    ? localStorage.getItem(`avatar_${user.id}`)
+                    : null;
+                  const avatarToShow = localAvatar || userAvatar;
+
+                  return avatarToShow ? (
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full overflow-hidden ">
+                      <Image
+                        src={avatarToShow}
+                        alt={user?.username || "User"}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                        onError={(e) => {
+                          // Fallback to icon if image fails
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-8 w-8">
                 <CircleUserRound className="h-8 w-8 text-primary" />
+              </div>
+                  );
+                })()}
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

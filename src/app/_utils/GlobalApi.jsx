@@ -9,7 +9,17 @@ const getCategory=()=>axiosClient.get('/categories?populate=*');
 const getSliders=()=>axiosClient.get('/sliders?populate=*').then(resp=> {return resp.data.data})
 const getCategoryList=()=>axiosClient.get('/categories?populate=*').then(resp=> {return resp.data.data})
 const getAllProducts=()=>axiosClient.get('/products?populate=*').then(resp=> {return resp.data.data})
-const getProductsByCategory=(category)=>axiosClient.get('/products?filters[categories][name][$in]='+category+"&populate=*").then(resp=> {return resp.data.data})
+
+const getProductsByCategory = (category) =>
+  axiosClient
+    .get("/products", {
+      params: {
+        "filters[categories][name][$in]": category,
+        populate: "*",
+      },
+    })
+    .then((resp) => resp.data.data);
+
 
 const registerUser= (username, email, password) => axiosClient.post('/auth/local/register',{
   username: username,
@@ -207,6 +217,35 @@ const getMyOrder = (userid, jwt) => {
     });
 };
 
+const searchProductsByName = (query) =>
+  axiosClient
+    .get(
+      `/products?filters[name][$containsi]=${encodeURIComponent(
+        query
+      )}&populate=*`
+    )
+    .then((resp) => resp.data.data);
+
+const uploadFile = (file, jwt) => {
+  const formData = new FormData();
+  formData.append("files", file);
+
+  return axiosClient
+    .post("/upload", formData, {
+      headers: { Authorization: "Bearer " + jwt },
+    })
+    .then((r) => r.data);
+};
+
+const updateUserProfile = (userId, data, jwt) => {
+  // ✅ FIXED: Use axiosClient instead of axios directly
+  return axiosClient.put(`/users/${userId}`, data, {
+    headers: { 
+      Authorization: "Bearer " + jwt,
+      'Content-Type': 'application/json'
+    },
+  }).then(r => r.data);
+};
 
 
 
@@ -225,5 +264,7 @@ export default{
     createOrder,
     getMyOrder,
     cleanOrphanedCartItems,
-
+    searchProductsByName,
+    uploadFile,
+    updateUserProfile,
 }
