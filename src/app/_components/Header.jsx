@@ -346,45 +346,61 @@ function Header() {
           <div className="w-20 h-10 bg-gray-200 rounded animate-pulse"></div>
         ) : !isLogin ? (
           <Link href="/sign-in">
-            <Button className="bg-green-600 hover:bg-green-700 text-white">
+            <Button className="bg-primary hover:bg-green-700 text-white">
               Login
             </Button>
           </Link>
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="p-2 rounded-full cursor-pointer transition-colors">
+              <div className="p-2 rounded-full cursor-pointer transition-colors hover:bg-gray-100">
                 {(() => {
-                  // Check for local avatar first, then user's avatar
-                  const userAvatar = user?.avatar?.url
-                    ? user.avatar.url.startsWith("http")
-                      ? user.avatar.url
-                      : `http://localhost:1337${user.avatar.url}`
-                    : null;
-
+                  // Get avatar from localStorage ONLY (frontend-only avatars)
                   const localAvatar = user?.id
                     ? localStorage.getItem(`avatar_${user.id}`)
                     : null;
-                  const avatarToShow = localAvatar || userAvatar;
 
-                  return avatarToShow ? (
-                    <div className="flex items-center justify-center h-8 w-8 rounded-full overflow-hidden ">
-                      <Image
-                        src={avatarToShow}
-                        alt={user?.username || "User"}
-                        width={32}
-                        height={32}
-                        className="rounded-full object-cover"
-                        onError={(e) => {
-                          // Fallback to icon if image fails
-                          e.target.style.display = "none";
-                        }}
-                      />
+                  // Validate it's a proper base64 data URL
+                  const isValidBase64 =
+                    localAvatar &&
+                    localAvatar.startsWith("data:image/") &&
+                    localAvatar.includes(";base64,");
+
+                  if (isValidBase64) {
+                    return (
+                      <div className="flex items-center justify-center h-8 w-8 rounded-full overflow-hidden border border-gray-200">
+                        <Image
+                          src={localAvatar}
+                          alt={user?.username || "User"}
+                          width={32}
+                          height={32}
+                          className="object-cover"
+                          onError={(e) => {
+                            console.error("Avatar failed to load");
+                            e.target.style.display = "none";
+                            // Show fallback
+                            const parent = e.target.parentElement;
+                            if (parent) {
+                              const fallback = document.createElement("div");
+                              fallback.className =
+                                "h-full w-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold";
+                              fallback.textContent =
+                                user?.username?.charAt(0).toUpperCase() || "U";
+                              parent.appendChild(fallback);
+                            }
+                          }}
+                        />
+                      </div>
+                    );
+                  }
+
+                  // No avatar, show user initial
+                  const userInitial =
+                    user?.username?.charAt(0).toUpperCase() || "U";
+                  return (
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold border border-gray-200">
+                      {userInitial}
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-8 w-8">
-                <CircleUserRound className="h-8 w-8 text-primary" />
-              </div>
                   );
                 })()}
               </div>

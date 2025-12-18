@@ -237,15 +237,33 @@ const uploadFile = (file, jwt) => {
     .then((r) => r.data);
 };
 
-const updateUserProfile = (userId, data, jwt) => {
-  // ✅ FIXED: Use axiosClient instead of axios directly
-  return axiosClient.put(`/users/${userId}`, data, {
-    headers: { 
-      Authorization: "Bearer " + jwt,
-      'Content-Type': 'application/json'
-    },
-  }).then(r => r.data);
+const updateUserProfile = async (userId, data, jwt) => {
+  try {
+    console.log("🔄 Updating user profile by ID...");
+    console.log("User ID:", userId); // This should be a number like 13
+    
+    // ✅ FIX: Use the actual user ID instead of "/users/me"
+    const response = await axiosClient.put(`/users/${userId}`, data, {
+      headers: { 
+        Authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    console.log("✅ Profile update successful!", response.data);
+    return response.data;
+    
+  } catch (error) {
+    console.error("❌ Update error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
+    throw error;
+  }
 };
+
 
 
 

@@ -7,17 +7,16 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="bg-primary text-white p-4">
+<div className="bg-linear-to-r from-gray-800 to-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center">
-            About GroceryStore
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
+             Terms of Service
           </h1>
-          
+          <p className="text-lg text-center max-w-3xl mx-auto opacity-90">
+             Your trusted partner for fresh groceries since 2020
+          </p>
         </div>
       </div>
-      <p className="text-lg text-center max-w-3xl mx-auto opacity-90 mt-6">
-            Your trusted partner for fresh groceries since 2020
-          </p>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -108,7 +107,7 @@ export default function AboutPage() {
         </div>
 
         {/* Stats Section */}
-        <div className="bg-linear-to-r from-primary to-blue-600 text-white rounded-2xl p-8 mb-12">
+        <div className="bg-linear-to-r  from-gray-800 to-gray-900 text-white rounded-2xl p-8 mb-12">
           <h2 className="text-3xl font-bold text-center mb-8">
             Our Impact in Numbers
           </h2>

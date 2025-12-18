@@ -61,28 +61,13 @@ function Footer() {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/products"
-                  className="text-green-100 transition hover:text-white hover:underline"
-                >
-                  All Products
-                </Link>
-              </li>
+              
               <li>
                 <Link
                   href="/#categories"
                   className="text-green-100 transition hover:text-white hover:underline"
                 >
                   Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/offers"
-                  className="text-green-100 transition hover:text-white hover:underline"
-                >
-                  Special Offers
                 </Link>
               </li>
               <li>
@@ -110,22 +95,7 @@ function Footer() {
                   Contact Us
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/shipping"
-                  className="text-green-100 transition hover:text-white hover:underline"
-                >
-                  Shipping Info
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/returns"
-                  className="text-green-100 transition hover:text-white hover:underline"
-                >
-                  Returns & Refunds
-                </Link>
-              </li>
+
               <li>
                 <Link
                   href="/privacy"
