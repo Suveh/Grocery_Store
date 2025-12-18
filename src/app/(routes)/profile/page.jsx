@@ -131,9 +131,7 @@ const onFileChange = (e) => {
     if (user?.id) {
       try {
         localStorage.setItem(`avatar_${user.id}`, base64Image);
-        console.log("✅ Avatar saved as base64 to localStorage");
       } catch (storageError) {
-        console.warn("LocalStorage error:", storageError);
         // Base64 might be too large for localStorage
         if (storageError.name === 'QuotaExceededError') {
           toast.error("Image too large for local storage. Please use a smaller image.");

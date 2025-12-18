@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { LoaderCircle, ShoppingBasket } from "lucide-react";
@@ -6,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import GlobalApi from "../_utils/GlobalApi";
 import { toast } from "sonner";
-import { data } from "autoprefixer";
 import { UpdateCartContext } from "../_context/UpdateCartContext";
 
 function ProductItemDetails({ product }) {

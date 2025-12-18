@@ -2,11 +2,7 @@
 import GlobalApi from "@/app/_utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger,} from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp, Package, Calendar, CreditCard, Truck, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 function MyOrder() {
@@ -293,8 +289,6 @@ function MyOrder() {
               ))
             )}
           </div>
-
-        
         </div>
       </div>
 

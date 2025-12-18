@@ -1,10 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import GlobalApi from "../_utils/GlobalApi";
 import { Trash2 } from "lucide-react";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 function CartItemList({ cartItemList, onDeleteItem }) {
   const [deletingItems, setDeletingItems] = React.useState({});
@@ -24,8 +22,6 @@ function CartItemList({ cartItemList, onDeleteItem }) {
       setDeletingItems((prev) => ({ ...prev, [cartDocumentId]: false }));
     }
   };
-
-
 
   return (
     <div className="flex flex-col h-full">
@@ -98,9 +94,6 @@ function CartItemList({ cartItemList, onDeleteItem }) {
           </div>
         )}
       </div>
-
-      {/* Fixed footer - only shows when there are items */}
-     
     </div>
   );
 }

@@ -4,7 +4,6 @@ import GlobalApi from "@/app/_utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "sonner";
-import CartItemList from "@/app/_components/CartItemList";
 import { Button } from "@/components/ui/button";
 import { UpdateCartContext } from "@/app/_context/UpdateCartContext";
 
@@ -24,9 +23,7 @@ export default function Checkout() {
     address: "",
   });
 
-  /** --------------------------
-   * Load JWT + User from storage
-   * -------------------------- */
+  /* Load JWT + User from storage */
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -50,9 +47,7 @@ export default function Checkout() {
     }
   }, [router]);
 
-  /** --------------------------
-   * Fetch Cart Items
-   * -------------------------- */
+  /* Fetch Cart Items*/
   const getCartItems = useCallback(async () => {
     if (!user || !jwt) return;
 
@@ -68,9 +63,7 @@ export default function Checkout() {
     getCartItems();
   }, [getCartItems]);
 
-  /** --------------------------
-   * Calculate Totals
-   * -------------------------- */
+  /* Calculate Totals */
   const subtotal = useMemo(() => {
     return cartItems.reduce((sum, item) => {
       return sum + (item.amount || 0);
@@ -83,16 +76,12 @@ export default function Checkout() {
 
   const totalUSD = (total / 300).toFixed(2);
 
-  /** --------------------------
-   * Handle Input Change
-   * -------------------------- */
+  /* Handle Input Change */
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  /** --------------------------
-   * Handle Payment
-   * -------------------------- */
+  /* Handle Payment */
   const handlePayment = () => {
     if (Object.values(form).some((v) => !v)) {
       alert("Please fill all required fields");

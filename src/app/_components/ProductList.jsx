@@ -1,8 +1,8 @@
 import React from 'react'
 import ProductItem from './ProductItem'
 
-function ProductList({ productList }) { // Changed from ProductList to productList
-  // Add error handling for undefined productList
+function ProductList({ productList }) {
+  
   if (!productList || !Array.isArray(productList)) {
     console.log("ProductList data is missing or invalid:", productList);
     return (

@@ -4,7 +4,7 @@ import TopCategoryList from '../_components/TopCategoryList';
 import ProductList from '@/app/_components/ProductList';
 
 async function ProductCategory(props) {
-  // 👇 unwrap the promise
+  
   const { params } = props;
   const { categoryName: rawCategoryName } = await params;
 

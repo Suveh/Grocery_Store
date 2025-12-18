@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Mail, User, Lock ,LoaderIcon} from "lucide-react";
@@ -23,8 +24,6 @@ function CreateAccount() {
 
   const onCreateAccount = () => {
     setLoading(true);
-    
-    //console.log("Sending registration request with:", { username, email, password });
     
     GlobalApi.registerUser(username, email, password)
       .then(resp => {

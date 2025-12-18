@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,10 +22,8 @@ function ForgotPassword() {
     setLoading(true);
     try{
       GlobalApi.forgotPassword(email);
-      console.log("Password reset requested for:", email);
       toast.success("Password reset link sent to your email.");
     }catch(error){
-      console.error("Error sending reset link:",error);
       toast.error("Failed to send reset link. Please try again.");
     }finally{
       setLoading(false);

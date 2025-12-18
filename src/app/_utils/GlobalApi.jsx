@@ -40,21 +40,15 @@ const forgotPassword = (email) => {
 
 const addToCart = async (cart, jwt) => {
   try {
-    console.log("🛒 ADD TO CART - Debug:", cart);
-
     const productId =
       cart.productId ??
       cart.product?.id ??
       cart.product;
 
     if (!productId) {
-      console.error("Invalid product id, cart:", cart);
       throw new Error("Product id is missing or invalid");
     }
-
-    console.log("📦 Product id to add:", productId);
-
-    // 1) Check for existing cart line by product id
+    
     const existingItems = await axiosClient.get(
       `/user-carts?filters[users_permissions_user][id][$eq]=${cart.userid}` +
         `&filters[product][id][$eq]=${productId}&populate=*`,
@@ -70,8 +64,6 @@ const addToCart = async (cart, jwt) => {
       const newQuantity = existingItem.quantity + cart.quantity;
       const newAmount = existingItem.amount + parseFloat(cart.amount);
 
-      console.log("🛒 Product exists → updating:", documentId);
-
       return axiosClient.put(
         `/user-carts/${documentId}`,
         { data: { quantity: newQuantity, amount: newAmount } },
@@ -79,14 +71,11 @@ const addToCart = async (cart, jwt) => {
       );
     }
 
-    // 3) Create new cart item
-    console.log("🛒 Creating new cart item with product id:", productId);
-
     return axiosClient.post(
       "/user-carts",
       {
         data: {
-          product: productId,      // ✅ just the id
+          product: productId,     
           quantity: cart.quantity,
           amount: cart.amount,
           users_permissions_user: cart.userid,
@@ -97,17 +86,13 @@ const addToCart = async (cart, jwt) => {
       }
     );
   } catch (error) {
-    console.error("❌ ADD TO CART ERROR:", error.response?.data || error.message);
     throw error;
   }
 };
 
 
-
-
   const cleanOrphanedCartItems = async (jwt) => {
   try {
-    console.log("🧹 Cleaning orphaned cart items...");
     
     const allCartItems = await axiosClient.get(
       `/user-carts?populate=users_permissions_user`,
@@ -119,19 +104,16 @@ const addToCart = async (cart, jwt) => {
     );
 
     if (orphanedItems.length > 0) {
-      console.log(`🗑️ Deleting ${orphanedItems.length} orphaned items...`);
       const deletePromises = orphanedItems.map(item => 
         axiosClient.delete(`/user-carts/${item.documentId}`, {
           headers: { Authorization: "Bearer " + jwt }
         })
       );
       await Promise.all(deletePromises);
-      console.log("✅ Orphaned items cleaned successfully");
-    } else {
-      console.log("✅ No orphaned items found");
+    } 
+    else {
     }
   } catch (error) {
-    console.error("❌ Clean orphaned items error:", error);
   }
 };
 
@@ -149,7 +131,7 @@ const getCartItems = (userid, jwt) => {
       documentId: item.documentId,
       quantity: item.quantity,
       amount:item.amount,
-      //userid:item.userid,
+      
       product: {
         id:item.product?.id,
         name: item.product?.name,
@@ -168,11 +150,6 @@ const deleteCartItem = (documentId, jwt) =>
       Authorization: "Bearer " + jwt
     },
   }).then(resp => {
-    console.log("=== DELETE RESPONSE ===");
-    console.log("Status:", resp.status);
-    console.log("Status Text:", resp.statusText);
-    console.log("Response Data:", resp.data);
-    console.log("=== END DELETE RESPONSE ===");
     return resp.data;
   }).catch(error => {
     console.error("Delete error:", error.response?.data || error.message);
@@ -239,10 +216,6 @@ const uploadFile = (file, jwt) => {
 
 const updateUserProfile = async (userId, data, jwt) => {
   try {
-    console.log("🔄 Updating user profile by ID...");
-    console.log("User ID:", userId); // This should be a number like 13
-    
-    // ✅ FIX: Use the actual user ID instead of "/users/me"
     const response = await axiosClient.put(`/users/${userId}`, data, {
       headers: { 
         Authorization: `Bearer ${jwt}`,
@@ -263,8 +236,6 @@ const updateUserProfile = async (userId, data, jwt) => {
     throw error;
   }
 };
-
-
 
 
 export default{

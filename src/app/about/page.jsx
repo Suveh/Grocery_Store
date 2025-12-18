@@ -1,19 +1,19 @@
 "use client";
+
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
       {/* Hero Section */}
-<div className="bg-linear-to-r from-gray-800 to-gray-900 text-white py-12">
+      <div className="bg-linear-to-r from-gray-800 to-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
-             Terms of Service
+            Terms of Service
           </h1>
           <p className="text-lg text-center max-w-3xl mx-auto opacity-90">
-             Your trusted partner for fresh groceries since 2020
+            Your trusted partner for fresh groceries since 2020
           </p>
         </div>
       </div>
@@ -26,11 +26,10 @@ export default function AboutPage() {
             <div className="lg:w-1/2">
               <div className="relative h-64 lg:h-80 w-full rounded-xl overflow-hidden">
                 <img
-  src="/our-store.jpg"
-  alt="Our Store"
-  className="object-cover"
-/>
-
+                  src="/our-store.jpg"
+                  alt="Our Store"
+                  className="object-cover"
+                />
               </div>
             </div>
             <div className="lg:w-1/2">
@@ -38,17 +37,17 @@ export default function AboutPage() {
                 Our Story
               </h2>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Founded in 2015, GroceryStore began as a small neighborhood shop 
-                with a simple mission: to provide fresh, high-quality groceries 
-                at affordable prices. What started as a single store has now 
-                grown into a trusted online platform serving thousands of 
+                Founded in 2015, GroceryStore began as a small neighborhood shop
+                with a simple mission: to provide fresh, high-quality groceries
+                at affordable prices. What started as a single store has now
+                grown into a trusted online platform serving thousands of
                 satisfied customers.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Today, we continue to uphold our founding principles while 
-                embracing technology to bring convenience to your doorstep. 
-                Our team is passionate about quality, freshness, and 
-                exceptional customer service.
+                Today, we continue to uphold our founding principles while
+                embracing technology to bring convenience to your doorstep. Our
+                team is passionate about quality, freshness, and exceptional
+                customer service.
               </p>
             </div>
           </div>
@@ -64,36 +63,41 @@ export default function AboutPage() {
               {
                 icon: "🌱",
                 title: "Freshness First",
-                description: "We source directly from farmers and suppliers to ensure maximum freshness."
+                description:
+                  "We source directly from farmers and suppliers to ensure maximum freshness.",
               },
               {
                 icon: "💝",
                 title: "Customer Happiness",
-                description: "Your satisfaction is our top priority. We go the extra mile for you."
+                description:
+                  "Your satisfaction is our top priority. We go the extra mile for you.",
               },
               {
                 icon: "💰",
                 title: "Fair Pricing",
-                description: "Quality products at honest prices, always."
+                description: "Quality products at honest prices, always.",
               },
               {
                 icon: "🚚",
                 title: "Reliable Delivery",
-                description: "On-time delivery with careful handling of your groceries."
+                description:
+                  "On-time delivery with careful handling of your groceries.",
               },
               {
                 icon: "🤝",
                 title: "Community Focus",
-                description: "Supporting local farmers and businesses in our community."
+                description:
+                  "Supporting local farmers and businesses in our community.",
               },
               {
                 icon: "🌍",
                 title: "Sustainability",
-                description: "Eco-friendly packaging and responsible sourcing practices."
+                description:
+                  "Eco-friendly packaging and responsible sourcing practices.",
               },
             ].map((value, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="text-4xl mb-4">{value.icon}</div>
@@ -136,22 +140,28 @@ export default function AboutPage() {
               {
                 name: "Arunasalam Sivalingam",
                 role: "Founder & CEO",
-                description: "With over 20 years in retail, Sivalingam leads our vision for quality and growth."
+                description:
+                  "With over 20 years in retail, Sivalingam leads our vision for quality and growth.",
               },
               {
                 name: "Sivalingam Thiruchelvy",
                 role: "Operations Director",
-                description: "Ensures smooth delivery and maintains our quality standards."
+                description:
+                  "Ensures smooth delivery and maintains our quality standards.",
               },
               {
                 name: "Sivalingam Thilakshan",
                 role: "Head of Procurement",
-                description: "Builds relationships with farmers and ensures the freshest produce."
+                description:
+                  "Builds relationships with farmers and ensures the freshest produce.",
               },
             ].map((member, index) => (
               <div key={index} className="text-center">
                 <div className="w-32 h-32 bg-linear-to-r from-cyan-100 to-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
-                  {member.name.split(' ').map(n => n[0]).join('')}
+                  {member.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   {member.name}
@@ -166,13 +176,13 @@ export default function AboutPage() {
         {/* CTA */}
         <div className="mt-12 text-center">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
+            <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition-colors font-medium"
             >
               Contact Us
             </Link>
-            <Link 
+            <Link
               href="/"
               className="inline-flex items-center justify-center gap-2 bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-900 transition-colors font-medium"
             >
