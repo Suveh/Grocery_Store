@@ -346,7 +346,7 @@ function Header() {
           <div className="w-20 h-10 bg-gray-200 rounded animate-pulse"></div>
         ) : !isLogin ? (
           <Link href="/sign-in">
-            <Button className="bg-primary hover:bg-green-700 text-white">
+            <Button className="bg-primary text-white">
               Login
             </Button>
           </Link>
