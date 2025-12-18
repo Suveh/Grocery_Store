@@ -10,7 +10,7 @@ export default function AboutPage() {
       <div className="bg-linear-to-r from-gray-800 to-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            Terms of Service
+            About Us
           </h1>
           <p className="text-lg text-center max-w-3xl mx-auto opacity-90">
             Your trusted partner for fresh groceries since 2020
