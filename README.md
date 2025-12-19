@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Grocery Store E-commerce Platform
+A modern, full-featured grocery shopping platform built with Next.js 13+ and Strapi headless CMS. Features user authentication, shopping cart, order management, and a responsive design.
 
-## Getting Started
+> Live Demo
+Frontend: [http://localhost:3000](http://localhost:3000)
 
-First, run the development server:
+Strapi Admin: [http://localhost:1337](http://localhost:1337)
 
-```bash
+> Quick Start
+Prerequisites
+- Node.js 18+ and npm/yarn
+- PostgreSQL 12+
+
+Git
+
+1. Clone the Repository
+bash
+git clone https://github.com/your-username/grocery-store.git
+cd grocery-store
+
+3. Frontend Setup (Next.js)
+bash
+cd frontend
+npm install
+cp .env.example .env.local
+# Edit .env.local with your configurations
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Frontend will run at: http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Backend Setup (Strapi)
+bash
+cd ../backend
+npm install
+cp .env.example .env
+# Edit .env with your database credentials
+npm run develop
+Strapi will run at: http://localhost:1337
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Frontend
+- Framework: Next.js 13+ with App Router
+- Language: TypeScript (optional)
+- Styling: Tailwind CSS + shadcn/ui
+- State Management: React Context + Local Storage
+- HTTP Client: Axios
+- Icons: Lucide React
+- Notifications: Sonner
 
-## Learn More
+Backend
+- CMS: Strapi v4
+- Database: PostgreSQL
+- Authentication: JWT with Strapi Users-Permissions
+- File Uploads: Local provider (can be switched to AWS S3/Cloudinary)
 
-To learn more about Next.js, take a look at the following resources:
+Development Tools
+- Package Manager: npm/yarn
+- Version Control: Git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✨ Features
+- Shopping Experience
+- Product browsing by categories
+- Real-time search functionality
+- Shopping cart with persistent storage
+- Secure checkout process
+- Order history tracking
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+👤 User Management
+- User registration & authentication
+- Profile management with avatar upload
+- Order tracking
 
-## Deploy on Vercel
+🎨 UI/UX
+- Fully responsive design
+- Dark/Light mode (optional)
+- Toast notifications
+- Loading states & skeletons
+- Form validation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+🛠️ Admin Features
+- Strapi admin panel for content management
+- Product CRUD operations
+- Order management
+- User management
+- Category management
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🗄️ Database Schema
+Main Collections
+- Users (Strapi built-in with extended fields)
+- Products (with categories, images, pricing)
+- Categories (hierarchical structure)
+- Orders (with order items, payment info)
+- UserCarts (shopping cart items)
+
+
+📈 Future Enhancements
+- Payment gateway integration (Stripe/Razorpay)
+- Real-time notifications
+- Product reviews & ratings
+- Wishlist functionality
+- Inventory management
+- Admin dashboard analytics
+- Multi-language support
+- PWA capabilities
+- Social login (Google/Facebook)
+- Email notifications
+
+🙏 Acknowledgments
+- Next.js for the amazing React framework
+- Strapi for the headless CMS
+- shadcn/ui for beautiful components
+- Tailwind CSS for utility-first CSS
+- All open-source contributors
